@@ -24,6 +24,7 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
+        "ext-openssl": "*",
         "firebase/php-jwt": "^6.3",
         "illuminate/database": "^9.46",
         "monolog/monolog": "^2.8",
@@ -31,8 +32,8 @@
         "robmorgan/phinx": "^0.13.3",
         "slim/psr7": "^1.6",
         "slim/slim": "^4.11",
-        "vlucas/phpdotenv": "^5.5",
-        "ext-openssl": "*"
+        "tuupola/cors-middleware": "^1.4",
+        "vlucas/phpdotenv": "^5.5"
     },
     "require-dev": {
         "jangregor/phpstan-prophecy": "^1.0.0",

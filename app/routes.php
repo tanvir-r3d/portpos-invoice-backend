@@ -9,20 +9,12 @@ use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use Slim\Psr7\Response;
 
 return function (App $app) {
-//    $app->options('/{routes:.*}', function (Request $request, Response $response) {
-//        // CORS Pre-Flight OPTIONS Request Handler
-//        return $response;
-//    });
-//
-//    $app->get('/', function (Request $request, Response $response) {
-//        $response->getBody()->write('Hello world!');
-//        return $response;
-//    });
-//
-//    $app->group('/users', function (Group $group) {
-//        $group->get('', ListUsersAction::class);
-//        $group->get('/{id}', ViewUserAction::class);
-//    });
+    // $app->add(new Tuupola\Middleware\CorsMiddleware);
+
+    // $app->options('/{routes:.*}', function (Request $request, Response $response) {
+    //     // CORS Pre-Flight OPTIONS Request Handler
+    //     return $response;
+    // });
 
     $app->group('/api/v1', function (Group $group) {
         $group->post('/login', AuthenticateController::class . ':login');
@@ -33,5 +25,4 @@ return function (App $app) {
             return $response->withHeader("Content-Type", "application/json");
         })->add(JWTMiddleware::class);
     });
-
 };

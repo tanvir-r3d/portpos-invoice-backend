@@ -45,7 +45,13 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
-
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', 'localhost:3000')
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
 // Register middleware
 $middleware = require __DIR__ . '/../app/middleware.php';
 $middleware($app);
@@ -87,3 +93,5 @@ $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $response = $app->handle($request);
 $responseEmitter = new ResponseEmitter();
 $responseEmitter->emit($response);
+
+
