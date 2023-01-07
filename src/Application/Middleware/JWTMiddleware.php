@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Application\Middleware;
 
 use App\Services\JWTService\JWTService;
-use DateTime;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -30,19 +29,15 @@ class JWTMiddleware implements Middleware
                     preg_match("/Bearer\s(\S+)/", $bearer, $matches);
                     $token = $matches[1];
                     $decodedToken = JWTService::make()->decodeToken($token);
-                    print_r($decodedToken);
-                    exit();
-                    $now = (new DateTime("now", new \DateTimeZone("Asia/Dhaka")))
-                        ->format("Y-m-d H:i:s");
 
-                    if ($decodedToken['expiresAt'] < $now) {
+                    if ($decodedToken['expiresAt'] < time()) {
                         throw new Exception('Token Expired');
                     }
                 } else {
                     throw new Exception('AUnauthorized Request.');
                 }
             } else {
-                throw new Exception('BUnauthorized Request.');
+                throw new Exception('Unauthorized Request.');
             }
 
             return $handler->handle($request);

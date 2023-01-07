@@ -18,6 +18,13 @@ final class Order extends AbstractMigration
      */
     public function change()
     {
-
+        $table = $this->table('orders');
+        $table->addColumn('invoice_id', 'text')
+            ->addColumn('currency', 'string')
+            ->addColumn('amount', 'string')
+            ->addColumn('status', 'integer')
+            ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('updated_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
+            ->create();
     }
 }

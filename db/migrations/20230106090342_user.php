@@ -22,7 +22,6 @@ final class User extends AbstractMigration
         $table->addColumn('email', 'string', ['null' => false])
             ->addColumn('username', 'string', ['null' => false])
             ->addColumn('password', 'string', ['null' => false])
-            ->addColumn('token', 'text')
             ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex(['email'], ['unique' => true])

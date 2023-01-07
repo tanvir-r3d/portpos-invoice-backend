@@ -23,7 +23,7 @@ class AuthenticateController extends BaseController
         if (!isset($formBody['email']) || !isset($formBody['email'])) {
             throw new Exception('The field "email" & "password" required.', 400);
         }
-        $user = User::query()->where('email', $formBody['email'])->first();
+        $user = User::where('email', $formBody['email'])->first();
         if (!($user && password_verify($formBody['password'], $user->password))) {
             throw new Exception('Email or password incorrect!');
         }

@@ -45,6 +45,7 @@ $container = $containerBuilder->build();
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 $callableResolver = $app->getCallableResolver();
+$app->add(new \Tuupola\Middleware\CorsMiddleware);
 
 // Register middleware
 $middleware = require __DIR__ . '/../app/middleware.php';

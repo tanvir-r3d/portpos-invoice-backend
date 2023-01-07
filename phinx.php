@@ -13,10 +13,10 @@ return
             'default_environment' => 'development',
             'development' => [
                 'adapter' => 'mysql',
-                'host' => 'database',
+                'host' => '127.0.0.1',
                 'name' => 'portpos-backend',
                 'user' => 'root',
-                'pass' => '@@@2023',
+                'pass' => '',
                 'port' => 3306,
                 'charset' => 'utf8',
             ],

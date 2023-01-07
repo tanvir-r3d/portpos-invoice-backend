@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class JwtToken extends AbstractMigration
+final class OrderProduct extends AbstractMigration
 {
     /**
      * Change Method.
@@ -18,17 +18,18 @@ final class JwtToken extends AbstractMigration
      */
     public function change()
     {
-        $table = $this->table('jwt_tokens');
-        $table->addColumn('user_id', 'integer', ['null' => false])
-            ->addColumn('token_title', 'string')
-            ->addColumn('token', 'text', ['null' => false])
-            ->addColumn('restrictions', 'json')
-            ->addColumn('permissions', 'json')
-            ->addColumn('last_used_at', 'timestamp')
-            ->addColumn('expires_at', 'timestamp')
-            ->addColumn('refreshed_at', 'timestamp')
+        $table = $this->table('order_products');
+        $table->addColumn('order_id', 'integer', [
+            'null' => true,
+            'signed' => FALSE,
+        ])
+            ->addColumn('name', 'string')
+            ->addColumn('description', 'string')
             ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
-            ->create();
+            ->addForeignKey('order_id', 'orders', 'id', [
+                'delete' => 'CASCADE',
+            ])
+            ->save();
     }
 }
