@@ -1,18 +1,62 @@
 version: '3.7'
 
 volumes:
-    logs:
-        driver: local
+  logs:
+    driver: local
 
 services:
-    slim:
-        image: php:7-alpine
-        working_dir: /var/www
-        command: php -S 0.0.0.0:8080 -t public
-        environment:
-            docker: "true"
-        ports:
-            - "8080:8080"
-        volumes:
-            - .:/var/www
-            - logs:/var/www/logs
+  slim:
+    build:
+      args:
+        user: TanvirHossen
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: portpos
+    container_name: portpos-application
+    working_dir: /var/www
+    command: php -S 0.0.0.0:8080 -t public
+    environment:
+      docker: "true"
+    ports:
+      - "8888:8080"
+    volumes:
+      - .:/var/www
+      - logs:/var/www/logs
+    networks:
+      - portpos-network
+  database:
+    image: mysql:5.7
+    container_name: portpos-database
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - portpos-network
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: portpos-phpmyadmin
+    restart: always
+    tty: true
+    depends_on:
+      - database
+    ports:
+      - "9999:80"
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      UPLOAD_LIMIT: 2048M
+    networks:
+      - portpos-network
+
+networks:
+  portpos-network:
+    driver: bridge
