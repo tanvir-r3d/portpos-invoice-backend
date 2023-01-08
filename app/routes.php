@@ -20,7 +20,8 @@ return function (App $app) {
             return $response->withHeader("Content-Type", "application/json");
         })->add(JWTMiddleware::class);
 
-        $group->patch('/orders/status/:id/:status', OrderController::class . ':updateStatus')->add(JWTMiddleware::class);
+        $group->patch('/orders/status/{id}/{status}', OrderController::class . ':updateStatus')->add(JWTMiddleware::class);
+        $group->get('/orders/ipn/{id}', OrderController::class . ':fetchIpn')->add(JWTMiddleware::class);
         $group->post('/orders', OrderController::class . ':store')->add(JWTMiddleware::class);
         $group->get('/orders', OrderController::class . ':index')->add(JWTMiddleware::class);
     });

@@ -6,13 +6,13 @@ use App\Controllers\BaseController;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Services\PortPosService\PortPosService;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
 class OrderController extends BaseController
 {
-
     public function index(Request $request, Response $response): Response
     {
         $formData = $request->getParsedBody();
@@ -56,25 +56,57 @@ class OrderController extends BaseController
             ->setBody($formBody)
             ->generateInvoice();
         if ($clientResponse->getStatusCode() === 201) {
-            $responseBody = json_decode($clientResponse->getBody()->getContents(), true);
-            $order->invoice_id = $responseBody['data']['invoice_id'];
+            $body = json_decode($clientResponse->getBody()->getContents(), true);
+            if (isset($body['data']['invoice_id'])) :
+                $order->invoice_id = $body['data']['invoice_id'];
+            endif;
             $order->save();
-        }
 
-        return $this->successResponse($response,
-            $clientResponse->getBody()->getContents(),
-            'Successfully generated invoice');
+            return $this->successResponse(
+                $response,
+                $order->invoice_id,
+                'Successfully generated invoice'
+            );
+        }
+        return $this->errorResponse(
+            $response,
+            'Successfully generated invoice'
+        );
     }
 
-    public function updateStatus(Response $response, $id, $status): Response
+    public function updateStatus(Response $response, $args): Response
     {
         try {
-            $order = Order::findOrFail($id);
-            $order->status = $status;
+            $order = Order::findOrFail($args['id']);
+            $order->status = $args['status'];
             $order->save();
 
             return $this->successResponse($response, $order, 'Successfully Status Updated');
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
+            return $this->errorResponse($response, $exception->getMessage(), $exception->getCode());
+        }
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function fetchIpn(Request $request, Response $response, $args)
+    {
+        try {
+            $order = Order::findOrFail($args['id']);
+            $invoiceId = $order->invoice_id;
+            $amount = $order->amount;
+            $clientResponse = PortPosService::init()->getIPN($invoiceId, $amount);
+
+            return $this->successResponse(
+                $response,
+                json_decode(
+                    $clientResponse->getBody()->getContents(),
+                    true
+                ),
+                'Successfully Fetched IPN'
+            );
+        } catch (Exception $exception) {
             return $this->errorResponse($response, $exception->getMessage(), $exception->getCode());
         }
     }
