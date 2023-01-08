@@ -13,9 +13,12 @@ use Slim\Psr7\Response;
 class AuthenticateController extends BaseController
 {
     /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      * @throws Exception
      */
-    public function login(Request $request, Response $response)
+    public function login(Request $request, Response $response): Response
     {
         $jsonResponse = [];
         $formBody = $request->getParsedBody();
@@ -34,8 +37,7 @@ class AuthenticateController extends BaseController
             return $this->successResponse($response, $jsonResponse, 'Successfully authenticated user');
         }
         $token = JWTService::make()
-            ->setPayload($user->id, $request->getUri()
-            )->createToken();
+            ->setPayload($user->id, $request->getUri())->createToken();
 
         $jsonResponse['token'] = $token;
         $jsonResponse['message'] = 'Successfully authenticated user';
@@ -47,6 +49,11 @@ class AuthenticateController extends BaseController
         return $this->successResponse($response, $jsonResponse, 'Successfully authenticated user', 201);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
     public function logout(Request $request, Response $response): Response
     {
         try {

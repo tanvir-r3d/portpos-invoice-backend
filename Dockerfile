@@ -5,7 +5,7 @@ ARG uid
 # Install Dependencies
 RUN apt-get update && apt-get install -y git curl libpng-dev libonig-dev libxml2-dev zip unzip
 
-RUN apt-get install -y wget dpkg fontconfig libfreetype6 libjpeg62-turbo libxrender1 xfonts-75dpi xfonts-base mariadb-client
+RUN apt-get install -y wget dpkg mariadb-client
 
 #install some base extensions
 RUN apt-get install -y \

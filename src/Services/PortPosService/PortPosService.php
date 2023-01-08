@@ -23,11 +23,17 @@ class PortPosService
         return $this;
     }
 
+    /**
+     * @return static
+     */
     public static function init(): self
     {
         return new static();
     }
 
+    /**
+     * @return Client
+     */
     private function getClient(): Client
     {
         return $this->client;
@@ -45,26 +51,37 @@ class PortPosService
         return $this->getClient()->request($method, $url, $options);
     }
 
+    /**
+     * @return string
+     */
     private function getAuthKey(): string
     {
         return 'Bearer ' . base64_encode($_ENV['APP_KEY'] . ":" . md5($_ENV['SECRET_KEY'] . time()));
     }
 
+    /**
+     * @param $body
+     * @return $this
+     */
     public function setBody($body): self
     {
         $this->body = $body;
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     private function getBody()
     {
         return $this->body;
     }
 
     /**
+     * @return string|ResponseInterface
      * @throws GuzzleException
      */
-    public function generateInvoice()
+    public function generateInvoice(): string|ResponseInterface
     {
         try {
             return $this->getRequest('POST', 'payment/v2/invoice', [
@@ -77,9 +94,12 @@ class PortPosService
     }
 
     /**
+     * @param $invoiceId
+     * @param $amount
+     * @return string|ResponseInterface
      * @throws GuzzleException
      */
-    public function getIPN($invoiceId, $amount)
+    public function getIPN($invoiceId, $amount): string|ResponseInterface
     {
         try {
             return $this->getRequest('GET', "payment/v2/invoice/ipn/$invoiceId/$amount");
