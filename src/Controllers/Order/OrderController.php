@@ -3,7 +3,6 @@
 namespace App\Controllers\Order;
 
 use App\Controllers\BaseController;
-use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Services\PortPosService\PortPosService;
 use Exception;
@@ -13,6 +12,11 @@ use Slim\Psr7\Response;
 
 class OrderController extends BaseController
 {
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
+     */
     public function index(Request $request, Response $response): Response
     {
         $formData = $request->getParsedBody();
@@ -22,7 +26,11 @@ class OrderController extends BaseController
         return $this->successResponse($response, $orders, 'Successfully fetched');
     }
 
+
     /**
+     * @param Request $request
+     * @param Response $response
+     * @return Response
      * @throws GuzzleException
      */
     public function store(Request $request, Response $response): Response
@@ -35,7 +43,7 @@ class OrderController extends BaseController
         $address = $customer['address'];
 
         $order = new Order();
-        $order->status = OrderStatus::STATUS_PENDING->value;
+        $order->status = 0;
         $order->fill($orderForm)->save();
 
         $order->billing()->create([
@@ -74,7 +82,13 @@ class OrderController extends BaseController
         );
     }
 
-    public function updateStatus(Response $response, $args): Response
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param $args
+     * @return Response
+     */
+    public function updateStatus(Request $request, Response $response, $args): Response
     {
         try {
             $order = Order::findOrFail($args['id']);
@@ -87,10 +101,15 @@ class OrderController extends BaseController
         }
     }
 
+
     /**
+     * @param Request $request
+     * @param Response $response
+     * @param $args
+     * @return Response
      * @throws GuzzleException
      */
-    public function fetchIpn(Request $request, Response $response, $args)
+    public function fetchIpn(Request $request, Response $response, $args): Response
     {
         try {
             $order = Order::findOrFail($args['id']);

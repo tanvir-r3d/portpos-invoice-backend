@@ -27,14 +27,19 @@ class JWTMiddleware implements Middleware
                 if (!empty($header)) {
                     $bearer = trim($header[0]);
                     preg_match("/Bearer\s(\S+)/", $bearer, $matches);
-                    $token = $matches[1];
-                    $decodedToken = JWTService::make()->decodeToken($token);
+                    if (count($matches)) {
+                        $token = $matches[1];
+                        $decodedToken = JWTService::make()->decodeToken($token);
 
-                    if ($decodedToken['expiresAt'] < time()) {
-                        throw new Exception('Token Expired');
+                        if ($decodedToken['expiresAt'] < time()) {
+                            throw new Exception('Token Expired');
+                        }
+                    } else {
+                        throw new Exception('Unauthorized Request.');
                     }
+
                 } else {
-                    throw new Exception('AUnauthorized Request.');
+                    throw new Exception('Unauthorized Request.');
                 }
             } else {
                 throw new Exception('Unauthorized Request.');
