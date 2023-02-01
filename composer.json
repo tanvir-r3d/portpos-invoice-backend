@@ -27,7 +27,7 @@
         "ext-openssl": "*",
         "firebase/php-jwt": "^6.3",
         "guzzlehttp/guzzle": "^7.5",
-        "illuminate/database": "^9.46",
+        "illuminate/database": "^9.49",
         "illuminate/pagination": "^9.46",
         "monolog/monolog": "^2.8",
         "palanik/corsslim": "^1.0",
